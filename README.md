@@ -1,20 +1,23 @@
 # ats-index
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js 18+](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org)
+
 **One API to search job listings across Greenhouse, Ashby, and Lever: full descriptions, not just titles.**
 
-## The problem
+---
 
-Companies post jobs on ATS (Applicant Tracking System) platforms like Greenhouse, Lever, or Ashby. These platforms have public APIs, but each one works differently, returns different data, and requires you to know the exact company identifier.
+## Why this exists
 
-If you want to check what three different companies are hiring for, you need to:
-1. Figure out which ATS each company uses
-2. Call three different APIs with three different formats
-3. Parse three different response structures
-4. Get title + URL but no job description from most tools out there
+Companies post jobs on ATS platforms (Greenhouse, Lever, Ashby). Each platform has a public API. But each works differently, returns different data, and requires you to know the exact company identifier.
 
-**ats-index does all of this in one call.** One command, full job descriptions, clean format.
+Most tools out there give you a title and a link. That is not enough to make a decision about whether a role is worth pursuing. You need the full job description.
 
-## What you get
+**ats-index normalizes all of it into one clean format with complete job descriptions in markdown.**
+
+---
+
+## Quick start
 
 ```bash
 npx ats-index fetch <company-slug>
@@ -24,82 +27,113 @@ npx ats-index fetch <company-slug>
 Found 47 jobs
 
   Senior Product Manager [Product] | San Francisco, CA
-  https://boards.greenhouse.io/example/jobs/123456
-  About the role: You will own the product roadmap for our integrations platform...
+  https://boards.greenhouse.io/.../123456
+  About the role: You will own the product roadmap for our
+  integrations platform...
 
   Staff Software Engineer [Engineering] | Remote
-  https://boards.greenhouse.io/example/jobs/789012
+  https://boards.greenhouse.io/.../789012
   About the team: We build the core infrastructure that powers...
 ```
 
-Full job descriptions in clean markdown. Not HTML soup. Not just a title and link.
+---
 
-## How it works
+## What each job includes
+
+| Field | What you get |
+|-------|-------------|
+| **Title** | Full job title with team or department |
+| **Company** | Normalized company name |
+| **Department** | When available from the ATS |
+| **Location** | City, state, country |
+| **Location type** | Remote, hybrid, or onsite |
+| **Salary** | Min-max range when the company provides it |
+| **Description** | Full job description, converted to clean markdown |
+| **URL** | Direct link to the posting |
+| **Posted date** | When available |
+
+---
+
+## Usage
+
+### Command line
 
 ```bash
-# Fetch jobs from any company: auto-detects which ATS they use
+# Fetch all open roles at a company (auto-detects ATS platform)
 ats-index fetch <company-slug>
 
-# Specify the platform
+# Specify the ATS platform
 ats-index fetch <company-slug> --ats greenhouse
-ats-index fetch <company-slug> --ats ashby
 
-# Find which ATS a company uses
+# Detect which ATS a company uses
 ats-index detect <company-name>
 
-# Search the built-in company registry
+# Search the built-in company registry by sector
 ats-index registry search fintech
+
+# Output as JSON for piping into other tools
+ats-index fetch <company-slug> --json
 ```
 
-## Use it in your code
+### As a library
 
 ```js
 import { fetchJobs, registry } from 'ats-index';
 
+// Fetch all open roles
 const jobs = await fetchJobs({ company: 'company-slug' });
-// Returns structured job objects with:
-// title, company, department, location, salary, description (markdown), url, postedAt
 
+// Search the registry
 const companies = await registry.search('fintech');
-// Find companies in the registry by sector
+
+// Detect which ATS a company uses
+const platforms = await registry.detect('company-name');
 ```
 
-## Every job comes with
+---
 
-| Field | What you get |
-|-------|-------------|
-| Title | Full job title with team/department |
-| Company | Normalized company name |
-| Department | When available from the ATS |
-| Location | City, state, country |
-| Location type | remote / hybrid / onsite |
-| Salary | Min-max range when the company provides it |
-| Description | Full job description in clean markdown |
-| URL | Direct link to the posting |
-| Posted date | When available |
+## Platforms supported
 
-## Supported platforms
+| Platform | Coverage |
+|----------|----------|
+| **Greenhouse** | Most widely used ATS in tech. Public board API with full job descriptions. |
+| **Ashby** | Popular with startups. REST and GraphQL APIs, often includes compensation data. |
+| **Lever** | Common in mid-stage companies. JSON API with department and workplace info. |
+| **BambooHR** | Planned |
+| **Workday** | Planned |
 
-| Platform | What it covers |
-|----------|---------------|
-| Greenhouse | The most widely used ATS in tech. Public board API with full JDs. |
-| Ashby | Popular with startups. REST + GraphQL APIs, often includes compensation. |
-| Lever | Common in mid-stage companies. JSON API with department and workplace data. |
+---
 
 ## Who is this for
 
-**Job seekers:** Connect this to your AI assistant to search company career pages without visiting each one manually. Pair with evaluation tools to score and track opportunities against your profile.
+**Job seekers** looking to search multiple company career pages from one place, or connect job data to their AI assistant for smarter evaluation.
 
-**Developers:** Building a job search tool, career platform, or AI agent that needs structured job data? Use this as your data layer instead of writing your own ATS adapters.
+**Developers** building job search tools, career platforms, or AI agents that need structured job data as a foundation.
 
-**Researchers:** Studying hiring trends, labor markets, or company growth patterns? We are open to ideas: open an issue and tell us what data would be useful.
+**Researchers** studying hiring trends or labor markets. We are open to ideas: [open an issue](../../issues) and tell us what data would be useful.
 
-## What's next
+---
+
+## Roadmap
 
 - [ ] Track when roles close or reopen over time
-- [ ] Show what changed at a company since your last check
+- [ ] Surface what changed at a company since your last check
 - [ ] BambooHR and Workday adapters
-- [ ] MCP server: let AI assistants query job boards as a tool
+- [ ] MCP server for AI tool integration
+
+---
+
+## Company registry
+
+The project ships with a curated registry of tech companies organized by ATS platform and sector. Community contributions welcome.
+
+To add companies, submit a PR to the files in `registry/`:
+
+```json
+{"slug": "company-slug", "name": "Company Name", "sector": "industry"}
+```
+
+---
 
 ## Install
 
@@ -107,21 +141,15 @@ const companies = await registry.search('fintech');
 npm install ats-index
 ```
 
-Or run directly:
+Or run without installing:
 
 ```bash
 npx ats-index fetch <company-slug>
 ```
 
-Requires Node.js 18+. No API keys needed: all endpoints are public.
+**Requirements:** Node.js 18+. No API keys needed: all endpoints are public.
 
-## Contributing
-
-The company registry ships with a curated list of tech companies. To add companies, submit a PR to the files in `registry/`. Format:
-
-```json
-{"slug": "company-slug", "name": "Company Name", "sector": "industry"}
-```
+---
 
 ## License
 
