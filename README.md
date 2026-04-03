@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js 18+](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org)
 
-**One API to search job listings across Greenhouse, Ashby, and Lever: full descriptions, not just titles.**
+**One API to search job listings across ATS platforms: full descriptions, not just titles.**
 
 ---
 
@@ -11,7 +11,7 @@
 
 Job seekers, developers, and researchers need structured job listing data from company career pages. Today, getting this data requires:
 
-- Knowing which ATS platform each company uses (Greenhouse? Ashby? Lever?)
+- Knowing which ATS platform each company uses
 - Writing custom API integrations for each platform
 - Parsing different response formats across platforms
 - Getting only titles and links from most existing tools, with no job descriptions
@@ -20,7 +20,7 @@ There is no single, open-source way to query multiple ATS platforms and get comp
 
 ## Solution
 
-ats-index provides a unified interface to fetch job listings from the three most common ATS platforms in tech. One call returns structured data with full job descriptions in clean markdown, regardless of which platform the company uses.
+ats-index provides a unified interface to fetch job listings across ATS platforms. One call returns structured data with full job descriptions in clean markdown, regardless of which platform the company uses. Starting with the most common platforms in tech, with more adapters being added.
 
 ```bash
 npx ats-index fetch <company-slug>
@@ -67,8 +67,11 @@ Every job listing is normalized into a consistent schema:
 | **Greenhouse** | Most widely used ATS in tech | REST (public, no auth) | Full JDs, departments, offices |
 | **Ashby** | Growing fast with startups | REST + GraphQL (public, no auth) | Full JDs, compensation data, employment type |
 | **Lever** | Common in mid-stage companies | REST (public, no auth) | Full JDs, departments, workplace type |
-| **BambooHR** | Planned | | |
-| **Workday** | Planned | | |
+| **BambooHR** | Next | Public careers API | Mid-market companies |
+| **Workday** | Next | Paginated POST API | Large enterprises |
+| **iCIMS** | Planned | Sitemap-based | Enterprise ATS |
+
+Adding a new ATS adapter is a single file. The architecture is designed to grow.
 
 ---
 
