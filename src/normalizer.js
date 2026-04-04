@@ -22,7 +22,7 @@ export function normalize(raw, ats) {
     department: raw.department || '',
     location: raw.location || '',
     locationType: detectLocationType(raw.location || ''),
-    salary: raw.salary || null,
+    salary: raw.salary || extractSalaryFromText(raw.description || ''),
     description: stripHtml(raw.description || ''),
     url: raw.url || '',
     postedAt: raw.postedAt || null,
@@ -36,6 +36,33 @@ export function normalize(raw, ats) {
 /**
  * Detect location type from location string.
  */
+/**
+ * Extract salary range from job description text.
+ * Matches patterns like: $162,400 - $243,600 or $150K-$200K
+ */
+function extractSalaryFromText(text) {
+  if (!text) return null;
+  // Match: $162,400 - $243,600 (full numbers)
+  const fullMatch = text.match(/\$([\d,]+)\s*[-–]\s*\$([\d,]+)/);
+  if (fullMatch) {
+    return {
+      min: parseInt(fullMatch[1].replace(/,/g, '')),
+      max: parseInt(fullMatch[2].replace(/,/g, '')),
+      currency: 'USD',
+    };
+  }
+  // Match: $150K - $200K (shorthand)
+  const kMatch = text.match(/\$(\d+)[kK]\s*[-–]\s*\$(\d+)[kK]/);
+  if (kMatch) {
+    return {
+      min: parseInt(kMatch[1]) * 1000,
+      max: parseInt(kMatch[2]) * 1000,
+      currency: 'USD',
+    };
+  }
+  return null;
+}
+
 function detectLocationType(location) {
   const lower = location.toLowerCase();
   if (/remote/i.test(lower)) return 'remote';
