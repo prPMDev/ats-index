@@ -4,7 +4,7 @@
  * ats-index CLI
  *
  * Usage:
- *   ats-index fetch <company> [--ats greenhouse|lever|ashby]
+ *   ats-index fetch <company> [--ats greenhouse|lever|ashby] [--filter keyword|pattern]
  *   ats-index detect <company>
  *   ats-index registry search <query>
  */
@@ -21,10 +21,20 @@ async function main() {
       if (!company) { console.error('Usage: ats-index fetch <company> [--ats greenhouse|lever|ashby]'); process.exit(1); }
       const atsIdx = args.indexOf('--ats');
       const ats = atsIdx >= 0 ? args[atsIdx + 1] : undefined;
+      const filterIdx = args.indexOf('--filter');
+      const filter = filterIdx >= 0 ? args[filterIdx + 1] : undefined;
 
-      console.log(`Fetching jobs from ${company}${ats ? ` (${ats})` : ' (auto-detect)'}...`);
-      const jobs = await fetchJobs({ company, ats });
-      console.log(`Found ${jobs.length} jobs\n`);
+      console.log(`Fetching jobs from ${company}${ats ? ` (${ats})` : ' (auto-detect)'}${filter ? ` [filter: ${filter}]` : ''}...`);
+      let jobs = await fetchJobs({ company, ats });
+
+      if (filter) {
+        const pattern = new RegExp(filter, 'i');
+        const before = jobs.length;
+        jobs = jobs.filter(j => pattern.test(j.title) || pattern.test(j.department));
+        console.log(`Found ${before} jobs, ${jobs.length} match filter\n`);
+      } else {
+        console.log(`Found ${jobs.length} jobs\n`);
+      }
 
       for (const job of jobs.slice(0, 20)) {
         const salary = job.salary ? ` | $${job.salary.min?.toLocaleString()}-$${job.salary.max?.toLocaleString()}` : '';
@@ -84,13 +94,14 @@ async function main() {
       console.log(`ats-index — A structured index of who's hiring what.
 
 Usage:
-  ats-index fetch <company> [--ats greenhouse|lever|ashby] [--json]
+  ats-index fetch <company> [--ats greenhouse|lever|ashby] [--filter pattern] [--json]
   ats-index detect <company>
   ats-index registry search <query>
 
 Examples:
   ats-index fetch stripe
-  ats-index fetch notion --ats ashby
+  ats-index fetch stripe --filter "product manager|PM"
+  ats-index fetch notion --ats ashby --filter integrations
   ats-index detect figma
   ats-index registry search fintech`);
   }
