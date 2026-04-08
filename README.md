@@ -53,7 +53,7 @@ Every job listing is normalized into a consistent schema:
 | **department** | Team or department name | When provided by ATS |
 | **location** | City, state, country | Always |
 | **locationType** | remote / hybrid / onsite | Derived from location text |
-| **salary** | Min-max range with currency | When company provides it (common on Ashby) |
+| **salary** | Min-max range with currency | Extracted from structured fields or JD text |
 | **description** | Complete job description in clean markdown | Always |
 | **url** | Direct link to the job posting | Always |
 | **postedAt** | Publication date | When provided by ATS |
@@ -153,7 +153,9 @@ Format:
 | Ashby adapter | Shipped | Full JDs, compensation, employment type |
 | Lever adapter | Shipped | Full JDs, departments, workplace type |
 | Auto-detect | Shipped | Checks all platforms for a company slug |
-| Company registry | Shipped | Curated list, searchable by sector |
+| Company registry | Shipped | 36 verified companies across platforms |
+| Title filter | Shipped | --filter flag with regex pattern matching |
+| Salary extraction | Shipped | From structured fields and JD text |
 | Temporal tracking | Planned | Track when roles open, close, or reopen |
 | Change detection | Planned | Surface what changed since your last check |
 | BambooHR adapter | Planned | Expand platform coverage |

@@ -1,7 +1,7 @@
 {
   "name": "ats-index",
   "version": "0.1.0",
-  "description": "A structured index of who's hiring what, across every major ATS — with full descriptions, unified schema, and temporal diffs.",
+  "description": "One API to search job listings across ATS platforms: full descriptions, unified schema, title filtering, and salary extraction.",
   "type": "module",
   "main": "src/index.js",
   "bin": {
