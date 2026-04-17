@@ -8,7 +8,7 @@
     "ats-index": "src/cli.js"
   },
   "scripts": {
-    "test": "node test/test.js",
+    "test": "node --test test/*.test.js",
     "fetch": "node src/cli.js fetch",
     "search": "node src/cli.js search"
   },
