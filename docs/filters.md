@@ -93,6 +93,25 @@ Prefer qualified terms:
 - `Remote - Global` — explicitly worldwide
 - Pair `Remote` with country keywords in the same include list
 
+### Short tokens: word-boundary matching
+
+Keywords of 4 characters or fewer use word-boundary matching automatically. Longer keywords use substring matching.
+
+This prevents silent false positives on short country codes:
+
+| Keyword | Location | Matches? | Why |
+|---------|----------|----------|-----|
+| `US` | `San Francisco, US` | Yes | US is a standalone word |
+| `US` | `Remote - US` | Yes | Same |
+| `US` | `Australia` | No | "us" inside "australia" isn't a word |
+| `US` | `Brussels`, `Belarus`, `Lausanne` | No | Same reason |
+| `UK` | `London, UK` | Yes | UK is a standalone word |
+| `UK` | `Auckland, New Zealand` | No | "uk" is inside "auckland" |
+| `United States` | `United States of America` | Yes | Substring match for longer keywords |
+| `EMEA` | `Remote - EMEA` | Yes | 4-char boundary, still matches cleanly |
+
+So `US` and `UK` are safe to pass as-is — the implementation prevents the substring collisions that would otherwise silently return Australian or New Zealand jobs to a US query.
+
 ---
 
 ## Date filtering

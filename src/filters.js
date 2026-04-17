@@ -41,18 +41,18 @@ export function applyFilters(jobs, options = {}) {
   }
 
   if (Array.isArray(locationIncludes) && locationIncludes.length > 0) {
-    const needles = locationIncludes.map(s => s.toLowerCase());
+    const matchers = locationIncludes.map(makeLocationMatcher);
     result = result.filter(j => {
       const loc = (j.location || '').toLowerCase();
-      return needles.some(n => loc.includes(n));
+      return matchers.some(m => m(loc));
     });
   }
 
   if (Array.isArray(locationExcludes) && locationExcludes.length > 0) {
-    const needles = locationExcludes.map(s => s.toLowerCase());
+    const matchers = locationExcludes.map(makeLocationMatcher);
     result = result.filter(j => {
       const loc = (j.location || '').toLowerCase();
-      return !needles.some(n => loc.includes(n));
+      return !matchers.some(m => m(loc));
     });
   }
 
@@ -61,4 +61,23 @@ export function applyFilters(jobs, options = {}) {
   }
 
   return result;
+}
+
+/**
+ * Build a matcher for a single location keyword.
+ *
+ * Short tokens (≤4 chars) use word-boundary matching to prevent substring
+ * collisions like "US" matching "Australia", "Brussels", "Belarus", or "UK"
+ * matching "Auckland". Longer tokens use substring matching so phrases like
+ * "United States" can match "United States of America".
+ */
+function makeLocationMatcher(needle) {
+  const lower = (needle || '').toLowerCase().trim();
+  if (!lower) return () => false;
+  if (lower.length <= 4) {
+    const escaped = lower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`\\b${escaped}\\b`);
+    return (loc) => pattern.test(loc);
+  }
+  return (loc) => loc.includes(lower);
 }

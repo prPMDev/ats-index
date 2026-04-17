@@ -188,6 +188,83 @@ describe('applyFilters — postedWithinDays', () => {
   });
 });
 
+describe('applyFilters — word boundary matching for short location tokens', () => {
+  // Tester found a real bug: substring match of "US" matches "Australia",
+  // "Brussels", "Belarus", "Lausanne", "Sydney, AUS". Short tokens (≤4 chars)
+  // must use word-boundary matching to avoid silent false positives.
+  const globalJobs = [
+    { id: 'us1', title: 'PM', department: 'Eng', location: 'San Francisco, US', postedAt: daysAgo(1) },
+    { id: 'us2', title: 'PM', department: 'Eng', location: 'Remote - US', postedAt: daysAgo(1) },
+    { id: 'us3', title: 'PM', department: 'Eng', location: 'United States', postedAt: daysAgo(1) },
+    { id: 'au1', title: 'PM', department: 'Eng', location: 'Sydney, Australia', postedAt: daysAgo(1) },
+    { id: 'au2', title: 'PM', department: 'Eng', location: 'Sydney, AUS', postedAt: daysAgo(1) },
+    { id: 'be1', title: 'PM', department: 'Eng', location: 'Brussels, Belgium', postedAt: daysAgo(1) },
+    { id: 'by1', title: 'PM', department: 'Eng', location: 'Minsk, Belarus', postedAt: daysAgo(1) },
+    { id: 'ch1', title: 'PM', department: 'Eng', location: 'Lausanne, Switzerland', postedAt: daysAgo(1) },
+    { id: 'uk1', title: 'PM', department: 'Eng', location: 'London, UK', postedAt: daysAgo(1) },
+    { id: 'nz1', title: 'PM', department: 'Eng', location: 'Auckland, New Zealand', postedAt: daysAgo(1) },
+  ];
+
+  test('"US" does NOT match Australia, Brussels, Belarus, Lausanne', () => {
+    const result = applyFilters(globalJobs, { locationIncludes: ['US'] });
+    const ids = result.map(j => j.id).sort();
+    // Should match only us1, us2 — not au1, au2, be1, by1, ch1
+    assert.deepEqual(ids, ['us1', 'us2']);
+  });
+
+  test('"US" matches locations with US as a proper token', () => {
+    const result = applyFilters(globalJobs, { locationIncludes: ['US'] });
+    assert.ok(result.find(j => j.id === 'us1'));
+    assert.ok(result.find(j => j.id === 'us2'));
+  });
+
+  test('"UK" does NOT match Auckland', () => {
+    const result = applyFilters(globalJobs, { locationIncludes: ['UK'] });
+    const ids = result.map(j => j.id);
+    assert.deepEqual(ids, ['uk1']);
+    assert.ok(!ids.includes('nz1'));
+  });
+
+  test('"United States" still uses substring match (no regression)', () => {
+    const result = applyFilters(globalJobs, { locationIncludes: ['United States'] });
+    assert.equal(result.length, 1);
+    assert.equal(result[0].id, 'us3');
+  });
+
+  test('"AUS" (3-char code) does not leak into words containing "aus"', () => {
+    const result = applyFilters(globalJobs, { locationIncludes: ['AUS'] });
+    const ids = result.map(j => j.id).sort();
+    // Should match only au2 (where "AUS" is a discrete token). NOT au1 (Australia).
+    assert.deepEqual(ids, ['au2']);
+  });
+
+  test('locationExcludes applies word boundaries too (the symmetric case)', () => {
+    // Exclude "UK" should drop London but keep Auckland
+    const result = applyFilters(globalJobs, { locationExcludes: ['UK'] });
+    const ids = result.map(j => j.id);
+    assert.ok(!ids.includes('uk1'), 'UK job should be excluded');
+    assert.ok(ids.includes('nz1'), 'Auckland should NOT be excluded by UK filter');
+  });
+
+  test('Mix: include "United States" + exclude "UK" handles cleanly', () => {
+    const result = applyFilters(globalJobs, {
+      locationIncludes: ['United States', 'US'],
+      locationExcludes: ['UK'],
+    });
+    const ids = result.map(j => j.id).sort();
+    assert.deepEqual(ids, ['us1', 'us2', 'us3']);
+  });
+
+  test('5-char tokens keep substring behavior (EMEA, LATAM as qualifiers)', () => {
+    const withEmea = [
+      ...globalJobs,
+      { id: 'e1', title: 'PM', department: 'Eng', location: 'Remote - EMEA', postedAt: daysAgo(1) },
+    ];
+    const result = applyFilters(withEmea, { locationExcludes: ['EMEA'] });
+    assert.ok(!result.find(j => j.id === 'e1'));
+  });
+});
+
 describe('applyFilters — locationIncludes', () => {
   test('keeps jobs whose location contains any included keyword', () => {
     const result = applyFilters(JOBS, { locationIncludes: ['San Francisco', 'Remote'] });
