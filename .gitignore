@@ -7,3 +7,6 @@ store/
 # Scratch / local scan scripts
 scan*.mjs
 scan*.js
+
+# Private notes, drafts, learning logs
+notes/
