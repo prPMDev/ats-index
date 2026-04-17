@@ -3,3 +3,7 @@ store/
 *.db
 .env
 .DS_Store
+
+# Scratch / local scan scripts
+scan*.mjs
+scan*.js
