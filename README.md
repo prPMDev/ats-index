@@ -2,226 +2,73 @@
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js 18+](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org)
+[![Tests: 66 passing](https://img.shields.io/badge/tests-66%20passing-brightgreen.svg)](test/)
 
-**One API to search job listings across ATS platforms: full descriptions, not just titles.**
+> **One API to search jobs across every ATS. Full descriptions, salary ranges, 66 verified companies — no API keys, no scraping.**
 
 ---
 
-## Problem statement
-
-Job seekers, developers, and researchers need structured job listing data from company career pages. Today, getting this data requires:
-
-- Knowing which ATS platform each company uses
-- Writing custom API integrations for each platform
-- Parsing different response formats across platforms
-- Getting only titles and links from most existing tools, with no job descriptions
-
-There is no single, open-source way to query multiple ATS platforms and get complete, normalized job data back.
-
-## Solution
-
-ats-index provides a unified interface to fetch job listings across ATS platforms. One call returns structured data with full job descriptions in clean markdown, regardless of which platform the company uses. Starting with the most common platforms in tech, with more adapters being added.
+## Try it
 
 ```bash
-npx ats-index fetch <company-slug>
+npx ats-index fetch stripe --title-filter "product manager" --posted-within-days 14
 ```
 
-The system auto-detects which ATS a company uses, fetches all open roles, normalizes the response into a common schema, and converts HTML job descriptions into readable markdown.
+Returns every PM role posted at Stripe in the last two weeks — title, department, location, salary, full description, direct link.
 
-No API keys. No browser automation. No scraping. Just public API calls.
+## What you get back
 
----
+Every job normalizes to this shape, across every platform:
 
-## Target users
+```json
+{
+  "id": "a1b2c3d4e5f6",
+  "company": "Stripe",
+  "title": "Senior Product Manager, Integrations",
+  "department": "Product",
+  "location": "San Francisco, CA",
+  "locationType": "hybrid",
+  "salary": { "min": 180000, "max": 260000, "currency": "USD" },
+  "description": "Lead strategy for Stripe's integration ecosystem...",
+  "url": "https://boards.greenhouse.io/stripe/jobs/12345",
+  "postedAt": "2026-04-10T14:30:00Z"
+}
+```
 
-| Segment | Need | How ats-index helps |
-|---------|------|-------------------|
-| **Job seekers** | Search company career pages without visiting each one | Fetch and filter roles across companies from the command line or through an AI assistant |
-| **Tool builders** | Structured job data as a foundation for career platforms, AI agents, or evaluation tools | Import as an npm library. Unified schema, no adapter code needed. |
-| **Researchers** | Hiring trend data across the tech industry | Structured, queryable data from thousands of company job boards |
+No custom parsing per company. One schema across Greenhouse, Ashby, and Lever.
 
----
+## Why this exists
 
-## Data model
+Every company's careers page sits behind a different ATS — Greenhouse, Lever, Ashby, and more. Getting structured data means writing custom integrations for each one, parsing different response formats, and usually settling for job titles and links with no descriptions.
 
-Every job listing is normalized into a consistent schema:
+ats-index gives you one unified API to all of them. Public data, public APIs, no scraping — just the integration work you'd rather not redo.
 
-| Field | Description | Availability |
-|-------|-------------|-------------|
-| **title** | Full job title with team or department context | Always |
-| **company** | Normalized company name | Always |
-| **department** | Team or department name | When provided by ATS |
-| **location** | City, state, country | Always |
-| **locationType** | remote / hybrid / onsite | Derived from location text |
-| **salary** | Min-max range with currency | Extracted from structured fields or JD text |
-| **description** | Complete job description in clean markdown | Always |
-| **url** | Direct link to the job posting | Always |
-| **postedAt** | Publication date | When provided by ATS |
+## What you can build with it
 
----
-
-## Platform coverage
-
-| Platform | Market position | API type | Key data points |
-|----------|----------------|----------|----------------|
-| **Greenhouse** | Most widely used ATS in tech | REST (public, no auth) | Full JDs, departments, offices |
-| **Ashby** | Growing fast with startups | REST + GraphQL (public, no auth) | Full JDs, compensation data, employment type |
-| **Lever** | Common in mid-stage companies | REST (public, no auth) | Full JDs, departments, workplace type |
-| **BambooHR** | Next | Public careers API | Mid-market companies |
-| **Workday** | Next | Paginated POST API | Large enterprises |
-| **iCIMS** | Planned | Sitemap-based | Enterprise ATS |
-
-Adding a new ATS adapter is a single file. The architecture is designed to grow.
-
----
-
-## How it works
-
-### Command line
-
+**Daily scan at target companies**
 ```bash
-# Fetch all open roles at a company (auto-detects platform)
-ats-index fetch <company-slug>
-
-# Specify the platform explicitly
-ats-index fetch <company-slug> --ats greenhouse
-
-# Role-type gate (matches title only — reliable role identity)
-ats-index fetch stripe --title-filter "product manager"
-
-# Topic/scope match (title + department + description)
-ats-index fetch stripe --filter "integrations|partnerships"
-
-# Combined: PM roles about integrations (title gate AND topic match)
-ats-index fetch stripe --title-filter "product manager" --filter "integrations|partnerships"
-
-# Only recent roles
-ats-index fetch stripe --posted-within-days 14
-
-# Cut geographic noise (comma-separated keyword lists)
-ats-index fetch ramp --location-include "United States,US,Remote - US" --location-exclude "London,Dublin,Berlin"
-
-# Detect which ATS a company uses
-ats-index detect <company-name>
-
-# Search the built-in company registry by sector
-ats-index registry search fintech
-
-# JSON output for piping into other tools
-ats-index fetch <company-slug> --json
+npx ats-index fetch ramp --title-filter "product manager" --location-include "United States,Remote - US" --posted-within-days 7
 ```
 
-### As a library
+**Sector sweep**
+```bash
+npx ats-index registry search fintech
+# Loop fetch_jobs over each slug to scan a whole segment
+```
 
+**As a library for your own tools**
 ```js
 import { fetchJobs, registry } from 'ats-index';
 
 const jobs = await fetchJobs({
   company: 'ramp',
-  titleFilter: 'product manager',         // role identity (title only)
-  filter: 'integrations|partnerships',    // topic/scope (anywhere)
+  titleFilter: 'engineer',
   postedWithinDays: 14,
-  locationIncludes: ['United States', 'US', 'Remote - US'],
-  locationExcludes: ['London', 'Dublin'],
   limit: 50,
 });
-
-const companies = await registry.search('fintech');
-const platforms = await registry.detect('company-name');
 ```
 
-### Filter design
-
-Filters operate on structured fields only — deterministic, fast, no interpretation. For semantic cuts ("is this role senior enough", "is it truly remote-friendly"), let the AI layer reason over the returned jobs.
-
-| Filter | Matches | Use when |
-|--------|---------|----------|
-| `titleFilter` | **Title only** | Role identity — "what KIND of role" ("PM", "Staff Engineer") |
-| `filter` | Title + department + description | Topic/scope — "what it's ABOUT" ("integrations", "growth") |
-| `postedWithinDays` | `postedAt` within N days | Recency cuts |
-| `locationIncludes` | Any keyword matches location (OR) | Region targeting |
-| `locationExcludes` | No keyword matches location | Drop geographic noise (EMEA pollution) |
-| `limit` | First N results | Cap output size |
-
-**Why title and topic are separate flags:**
-
-`--filter "product manager"` alone creates false positives — engineering JDs that mention "the product manager" as a collaborator get swept in. The keyword means different things in different fields:
-
-- In a **title**, "product manager" means *this role IS a PM*
-- In a **description**, "product manager" often means *this role works with PMs*
-
-Split intent:
-- `--title-filter "product manager"` — role identity (title must match)
-- `--filter "integrations"` — topic scope (matches anywhere)
-
-Both AND together. One CLI call captures "PM roles about integrations" with no noise.
-
-**Location filtering notes:**
-
-- **Prefer include over exclude.** Excluding every non-US location requires enumerating the world. `--location-include "United States,US,Remote - US"` is bounded and cleaner.
-- **Avoid bare "Remote"** as an inclusion — it matches "Remote (LatAm)", "Remote (EMEA)", "Remote - Global". Prefer qualified terms like "Remote - US" or pair "Remote" with country keywords.
-- Use exclude as a refinement on top of include, not as the primary tool.
-
----
-
-## Architecture
-
-```
-CLI / Library API
-      |
-      v
-  Auto-detect (checks each ATS for the company slug)
-      |
-      v
-  ATS Adapter (one per platform: greenhouse.js, ashby.js, lever.js)
-      |
-      v
-  Normalizer (maps platform-specific response to unified schema, strips HTML to markdown)
-      |
-      v
-  Structured output (JSON, or formatted CLI display)
-```
-
-Each adapter is a single file. Adding a new ATS platform means adding one adapter and registering it.
-
----
-
-## Company registry
-
-Ships with a curated registry of tech companies organized by ATS platform and sector. The registry enables:
-
-- Auto-detection of which ATS a company uses
-- Sector-based search ("show me all fintech companies")
-- Community contributions via PR
-
-Format:
-```json
-{"slug": "company-slug", "name": "Company Name", "sector": "industry"}
-```
-
----
-
-## Roadmap
-
-| Feature | Status | Description |
-|---------|--------|-------------|
-| Greenhouse adapter | Shipped | Full JDs, departments, offices |
-| Ashby adapter | Shipped | Full JDs, compensation, employment type |
-| Lever adapter | Shipped | Full JDs, departments, workplace type |
-| Auto-detect | Shipped | Checks all platforms for a company slug |
-| Company registry | Shipped | 36 verified companies across platforms |
-| Title filter (role identity) | Shipped | --title-filter for role-type gating (title only) |
-| Topic filter (scope) | Shipped | --filter for topic match across title, department, description |
-| Posted-within filter | Shipped | --posted-within-days for recency cuts |
-| Location filters | Shipped | --location-include / --location-exclude for geographic targeting |
-| Salary extraction | Shipped | From structured fields and JD text |
-| Temporal tracking | Planned | Track when roles open, close, or reopen |
-| Change detection | Planned | Surface what changed since your last check |
-| BambooHR adapter | Planned | Expand platform coverage |
-| Workday adapter | Planned | Expand platform coverage |
-| MCP server | Planned | Expose as a tool for AI assistants |
-
----
+Job seekers use it for daily shortlists. Tool builders use it as a foundation for AI agents and career platforms. Researchers use it for hiring-trend analysis.
 
 ## Install
 
@@ -235,17 +82,77 @@ Or run without installing:
 npx ats-index fetch <company-slug>
 ```
 
-**Requirements:** Node.js 18+. No API keys needed.
+Node.js 18+. No API keys. No configuration.
 
----
+## Data model
+
+| Field | Description |
+|-------|-------------|
+| `title` | Full job title |
+| `company` | Normalized company name |
+| `department` | Team or department (when provided) |
+| `location` | City, state, country, or remote |
+| `locationType` | `remote` / `hybrid` / `onsite` |
+| `salary` | Min-max range with currency (when available) |
+| `description` | Full JD in clean markdown |
+| `url` | Direct link to the posting |
+| `postedAt` | Publication date (when provided) |
+
+## Platforms
+
+| Platform | Status | Typical use |
+|----------|--------|-------------|
+| Greenhouse | Shipped | Most widely used ATS in tech |
+| Ashby | Shipped | Growing fast with startups |
+| Lever | Shipped | Common at mid-stage companies |
+| BambooHR | Planned | Mid-market companies |
+| Workday | Planned | Large enterprises |
+
+Adding a new ATS is a single adapter file. See [Contributing](#contributing).
+
+## Filters (quick reference)
+
+| Flag | What it matches | Use for |
+|------|-----------------|---------|
+| `--title-filter` | Title only | Role identity (PM, engineer, designer) |
+| `--filter` | Title + department + description | Topic / scope (integrations, growth) |
+| `--posted-within-days` | Recent postings | Recency cuts |
+| `--location-include` | Location contains any keyword | Region targeting |
+| `--location-exclude` | Location contains no keyword | Drop geographic noise |
+| `--limit` | First N results | Cap output size |
+
+All filters AND together. Deep dive on filter design patterns: [docs/filters.md](docs/filters.md).
+
+## Roadmap
+
+**Shipped**
+- Greenhouse, Ashby, Lever adapters
+- Title / topic / location / date filters
+- Salary extraction
+- Verified company registry (66 companies)
+
+**In progress**
+- MCP server — expose as a tool for AI assistants (Claude Desktop, Cursor, etc.)
+
+**Planned**
+- BambooHR and Workday adapters
+- Temporal tracking (when roles open, close, reopen)
+- Change detection
 
 ## Contributing
 
-Adding a company to the registry: submit a PR to the JSON files in `registry/`.
+**Add a company to the registry:** submit a PR to the appropriate file in `registry/`.
 
-Adding a new ATS adapter: create a new file in `src/adapters/` following the pattern of existing adapters. Each adapter exports a `fetch` function that takes a company slug and returns normalized job objects.
+**Add an ATS adapter:** new file in `src/adapters/`, follow the pattern of existing adapters.
 
----
+## Built by
+
+**[Prashant R](https://prashantrana.xyz)** — PM who builds. I write about AI, product work, and the integration layer — where APIs, agents, and products fit together in practice.
+
+- Portfolio + writing: [prashantrana.xyz](https://prashantrana.xyz)
+- [LinkedIn](https://www.linkedin.com/in/prashant-rana)
+
+ats-index is one experiment at that intersection. An MCP server version is coming next — turns this into a tool any AI assistant can use.
 
 ## License
 
