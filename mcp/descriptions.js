@@ -20,9 +20,9 @@ ARGUMENT GUIDE:
 
 company: lowercase slug, no spaces (e.g. "stripe", "cockroachlabs"). Hyphens and spaces auto-stripped.
 
-title_filter: regex matched against TITLE ONLY. Use for role identity ("product manager", "staff engineer"). Does NOT match description text — that's the distinction from filter.
+title_filter: JavaScript-compatible regex matched against TITLE ONLY. Case-insensitive by default — do NOT use inline flags like (?i) (not supported by V8). Use for role identity ("product manager", "staff engineer"). Does NOT match description text — that's the distinction from filter.
 
-filter: regex matched across title + department + description. Use for topic/scope ("integrations", "growth"). AND'd with title_filter.
+filter: JavaScript-compatible regex matched across title + department + description. Case-insensitive by default — do NOT use inline flags like (?i). Use for topic/scope ("integrations", "growth"). AND'd with title_filter.
 
 posted_within_days: number. "recent" or "new" → 30. "this week" → 7. "today" → 1.
 
