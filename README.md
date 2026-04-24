@@ -16,13 +16,13 @@ Your AI assistant already knows a lot about you. Your resume is in its memory. Y
 
 So you copy-paste.
 
-A JD from Stripe. Another from Mercury. Six more from your target list. Half have broken HTML. Salary info dies in translation. Links get stripped. And for every role, the dance starts over.
+A JD from one company. Another from the next. A half-dozen more from your target list. Half have broken HTML. Salary info dies in translation. Links get stripped. And for every role, the dance starts over.
 
 You could wait for the job boards to ship their own MCPs. They'll get there eventually. On their timeline. Filtered through their priorities, not yours. Tied to their query abstractions.
 
 jd-intel skips that wait. Raw JDs, fetched directly by your AI, on your terms. One level below the curated layer.
 
-> "Claude, pull the senior PM role at Stripe and draft a cover letter based on my resume."
+> "Pull that role I bookmarked and draft a cover letter based on my resume."
 
 Done.
 
@@ -33,7 +33,7 @@ Done.
 - Draft cover letters without pasting anything
 - Tailor your resume across ten roles in one conversation
 - Rank openings by fit with your background
-- Scan a whole sector: "Pull PM roles at fintech companies posted this week"
+- Scan a whole sector: "Pull open roles at fintech companies posted this week"
 - Research teams by reading their JDs in bulk
 
 The toolkit fetches. Your AI thinks.
@@ -76,7 +76,7 @@ npm install jd-intel
 Or run without installing:
 
 ```bash
-npx jd-intel fetch stripe --title-filter "product manager"
+npx jd-intel fetch <company-slug> --title-filter "engineer" --posted-within-days 14
 ```
 
 Or import as a library:
@@ -85,8 +85,8 @@ Or import as a library:
 import { fetchJobs, registry } from 'jd-intel';
 
 const jobs = await fetchJobs({
-  company: 'ramp',
-  titleFilter: 'engineer',
+  company: '<your-target-company>',
+  titleFilter: 'designer',
   postedWithinDays: 14,
   limit: 50,
 });
@@ -115,14 +115,14 @@ Every job normalizes to one schema, across every platform:
 ```json
 {
   "id": "a1b2c3d4e5f6",
-  "company": "Stripe",
-  "title": "Senior Product Manager, Integrations",
-  "department": "Product",
-  "location": "San Francisco, CA",
-  "locationType": "hybrid",
-  "salary": { "min": 180000, "max": 260000, "currency": "USD" },
-  "description": "Lead strategy for Stripe's integration ecosystem...",
-  "url": "https://boards.greenhouse.io/stripe/jobs/12345",
+  "company": "Example Co",
+  "title": "Senior Software Engineer, Platform",
+  "department": "Engineering",
+  "location": "Remote - US",
+  "locationType": "remote",
+  "salary": { "min": 180000, "max": 240000, "currency": "USD" },
+  "description": "Design and build the API surface our customers integrate against...",
+  "url": "https://boards.example.com/jobs/12345",
   "postedAt": "2026-04-10T14:30:00Z"
 }
 ```
