@@ -5,11 +5,13 @@
   "type": "module",
   "main": "server.js",
   "bin": {
-    "ats-index-mcp": "./server.js"
+    "ats-index-mcp": "./cli.js"
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "install:local": "node cli.js install",
+    "uninstall:local": "node cli.js uninstall"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
