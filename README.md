@@ -3,6 +3,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js 18+](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org)
 [![npm](https://img.shields.io/npm/v/jd-intel.svg)](https://www.npmjs.com/package/jd-intel)
+[![npm downloads](https://img.shields.io/npm/dw/jd-intel-mcp.svg)](https://www.npmjs.com/package/jd-intel-mcp)
+[![GitHub stars](https://img.shields.io/github/stars/prPMDev/jd-intel.svg?style=flat)](https://github.com/prPMDev/jd-intel/stargazers)
 
 > **Stop pasting job descriptions into AI assistants. Let your AI fetch them directly.**
 
@@ -22,7 +24,11 @@ You could wait for the job boards to ship their own MCPs. They'll get there even
 
 jd-intel skips that wait. Raw JDs, fetched directly by your AI, on your terms. One level below the curated layer.
 
-> "Pull that role I bookmarked and draft a cover letter based on my resume."
+Try asking your AI:
+
+> "Find AI/ML engineering jobs posted this week."
+> "What product designer roles are open at fintechs right now?"
+> "Pull the staff PM roles posted in the last 7 days."
 
 Done.
 
@@ -30,7 +36,7 @@ Done.
 
 ## What you can do with it
 
-- Draft cover letters without pasting anything
+- Look up open roles at any company directly from your AI, no copy-paste
 - Tailor your resume across ten roles in one conversation
 - Rank openings by fit with your background
 - Scan a whole sector: "Pull open roles at fintech companies posted this week"
@@ -42,12 +48,63 @@ The toolkit fetches. Your AI thinks.
 
 ## Install
 
-### For Claude Desktop, Cursor, Windsurf users
+Works with MCP-aware AI clients: Claude Desktop, Claude Code, Cursor, Windsurf. ChatGPT, Gemini, and other non-MCP clients don't support this yet. They use different tool-calling systems. (We wish they did. The protocol works the same way regardless of which AI you talk to.)
 
-Add to your MCP config file:
+You'll need [Node.js 18 or newer](https://nodejs.org/). To check: open a terminal and run `node --version`. If it's missing or older, install from nodejs.org first.
 
-**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+### For Claude Desktop (one command)
+
+1. **Open a terminal.** It's just a text window. Nothing destructive happens here.
+   - **macOS:** Spotlight (`⌘ Space`), type "Terminal", hit Enter.
+   - **Windows:** Start menu, type "PowerShell", hit Enter.
+
+2. **Paste this and hit Enter:**
+   ```bash
+   npx jd-intel-mcp install
+   ```
+
+3. **Quit and reopen Claude Desktop.** The tools appear automatically.
+
+Try: *"Find product roles at devtools companies."*
+
+If something goes wrong or you'd rather edit the config file directly, see [Manual install](#manual-install-fallback) below.
+
+### For Cursor and Windsurf
+
+These clients have their own MCP setup flows. Follow their docs:
+- [Cursor MCP setup](https://docs.cursor.com/context/model-context-protocol)
+- [Windsurf MCP setup](https://docs.windsurf.com/windsurf/mcp)
+
+Use this server config: `command: "npx"`, `args: ["-y", "jd-intel-mcp"]`.
+
+### For developers
+
+```bash
+npm install jd-intel
+```
+
+```js
+import { fetchJobs } from 'jd-intel';
+
+const jobs = await fetchJobs({
+  company: '<your-target-company>',
+  titleFilter: 'designer',
+  postedWithinDays: 14,
+  limit: 50,
+});
+```
+
+CLI usage: `npx jd-intel fetch <company-slug> --title-filter "engineer" --posted-within-days 14`. Full filter reference [below](#filters-quick-reference).
+
+Node.js 18+. No API keys. No configuration.
+
+### Manual install (fallback)
+
+If `npx jd-intel-mcp install` fails, edit the config directly.
+
+**Config file location:**
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -60,39 +117,7 @@ Add to your MCP config file:
 }
 ```
 
-Restart your AI client. The tools appear automatically. Ask your AI to fetch any role.
-
-**One-command install (avoids hand-editing the config):**
-```bash
-npx jd-intel-mcp install
-```
-
-### For developers (CLI and library)
-
-```bash
-npm install jd-intel
-```
-
-Or run without installing:
-
-```bash
-npx jd-intel fetch <company-slug> --title-filter "engineer" --posted-within-days 14
-```
-
-Or import as a library:
-
-```js
-import { fetchJobs, registry } from 'jd-intel';
-
-const jobs = await fetchJobs({
-  company: '<your-target-company>',
-  titleFilter: 'designer',
-  postedWithinDays: 14,
-  limit: 50,
-});
-```
-
-Node.js 18+. No API keys. No configuration.
+Restart Claude Desktop.
 
 ---
 
@@ -208,7 +233,7 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 
 ## Built by
 
-**[Prashant R](https://prashantrana.xyz)**. PM who builds. I write about what actually happens at the layer below the AI hype.
+**[Prashant R](https://prashantrana.xyz)**. PM who builds. I try out and build what really matters below the AI hype.
 
 - Portfolio and writing: [prashantrana.xyz](https://prashantrana.xyz)
 - [LinkedIn](https://www.linkedin.com/in/prashant-rana)

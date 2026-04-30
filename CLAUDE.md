@@ -43,6 +43,16 @@ Three ATS adapters shipped: Greenhouse, Lever, Ashby. 66-company verified regist
 
 ---
 
+## Scope (core principle)
+
+**In scope:** building, maintaining, and **polishing the product** itself — library, CLI, MCP server, tests, releases, README, docs, MCP tool descriptions, voice rules, naming, API design. Refactors, tightening, cleanup, version bumps, all in scope.
+
+**Out of scope:** polishing **learnings** into publishable content. LinkedIn posts, blog posts, course material, conference talks. That track lives in a separate project that consumes from `notes/`. jd-intel sessions capture into `notes/` (raw); a different project handles the publication side.
+
+The distinction: product polish is in. Learning-publication polish is out.
+
+---
+
 ## Quick start (developer)
 
 ```bash
@@ -124,16 +134,20 @@ jd-intel/
 
 ---
 
-## Where to find deep context (gitignored, local only)
+## notes/ — raw learning log (gitignored)
 
-`notes/` folder has the full picture. Forward to a collaborator if helpful, but don't commit:
+This is where decisions, learnings, and mental models go as they happen. Raw, not polished. A separate project consumes from here to produce publishable content (see **Scope** above for the boundary). jd-intel sessions just capture.
+
+**When to write:** the user signals learning ("TIL", "huh", "wait why", "interesting"), a non-obvious design decision is being made, or a mental model is forming. Append a brief entry. No formatting ceremony.
+
+**Where to write:** `notes/building-mcp.md` is the default. Split into a new file only when a topic is big enough to stand alone (the existing expansion-research.md / landing-page-plan.md split is the precedent).
 
 | File | Use for |
 |------|---------|
-| `notes/building-mcp.md` | Full journey log + 8 LinkedIn drafts + mental models. The single most useful file for catching up. |
+| `notes/building-mcp.md` | Active learning log + journey + mental models. Default file to append to. |
 | `notes/expansion-research.md` | Verified catalog of next-adapter options (Recruitee, Personio, Workable, Teamtailor) |
 | `notes/landing-page-plan.md` | Landing page blueprint for a focused half-day build |
-| `notes/linkedin-content-guide.md` | Handoff guide for someone drafting LinkedIn content from the project |
+| `notes/linkedin-content-guide.md` | Read-only from here. The polish/publish project consumes this. |
 
 ---
 
@@ -148,15 +162,13 @@ This file is mostly a router. Use Claude's defaults plus these targeted skills:
 | Brainstorm product directions, challenge assumptions | `product-management:product-brainstorming` |
 | Sprint planning, scoping a focused work session | `product-management:sprint-planning` |
 | Synthesize feedback (user testing, reviewer notes) | `product-management:synthesize-research` |
-| Write or critique LinkedIn / launch posts | reference `notes/linkedin-content-guide.md` |
 | Design critique on the landing page | `design:design-critique` |
 | Write or revise UX copy / microcopy | `design:ux-copy` |
 | Accessibility audit on landing page | `design:accessibility-review` |
 | Commit, push, open PR | `commit-commands:commit` / `commit-commands:commit-push-pr` |
 | Update this file | `claude-md-management:revise-claude-md` |
-| Broad codebase search | Explore agent (subagent_type: Explore) |
-| Plan a non-trivial implementation | Plan agent (subagent_type: Plan) |
-| Multi-step research with verification | general-purpose agent |
+
+(Default Claude tooling — Explore agent, Plan agent, general-purpose research — applies as usual; no need to enumerate.)
 
 Default behavior:
 - For UI / browser-observable work, follow the preview verification workflow (preview_start, preview_snapshot, etc.). For Node library / MCP server work, the test suite + smoke-test stdin protocol is the verification path.
@@ -165,33 +177,25 @@ Default behavior:
 
 ---
 
-## Current state (as of 2026-04-24)
+## Where to find current state (live, not snapshot)
 
-**Live:**
-- `jd-intel@0.1.0` + `jd-intel-mcp@0.1.0` published on npm
-- v0.1.0 tagged
-- Production-verified via real Claude Desktop integration-PM workflow
-- 78 tests passing
-- README dual-audience, voice-cleaned
+For shipped work and current priorities:
+- **Live state:** [npm jd-intel](https://www.npmjs.com/package/jd-intel), [npm jd-intel-mcp](https://www.npmjs.com/package/jd-intel-mcp), [GitHub releases](https://github.com/prPMDev/jd-intel/releases)
+- **Open priorities:** [GitHub issues](https://github.com/prPMDev/jd-intel/issues) — issues are the source of truth, not this file
+- **Parked plans:** `notes/landing-page-plan.md` (landing page), `notes/expansion-research.md` (next-adapter selection)
+- **Test baseline:** `node --test test/*.test.js` should be green
 
-**Open issues (priorities for future sessions):**
-- #18 v0.2.0 quality pass — `.strict()` Zod, tool annotations, pagination, `isError`, CHARACTER_LIMIT (~1 hr focused work)
-- #22 expansion: Recruitee, Personio, Workable, Teamtailor adapters (~1 day)
-- #21 design constraint for change-detection / diff_jobs (forward-looking)
-- #19 outputSchema/structuredContent for modern MCP clients (P1)
-- #17 duplicate IDs across multi-office postings (post-MVP)
-- #20 naming convention deviations (doc-only)
-- #11 README "JD fallback when web fails" angle (refinement)
-- #10 detect_ats fallback for unregistered companies
-- #7 retry + rate-limit handling
-- #2 BambooHR — flagged not viable per research, recommend close
-- #3 Workday — flagged brittle per research, deprioritize
+---
 
-**Parked (focused future sessions):**
-- Hosted MCP on Cloudflare Workers (HTTP transport — unlocks Claude.ai web users)
-- Landing page (GitHub Pages, blueprint in notes/landing-page-plan.md)
-- Anthropic MCP marketplace submission
-- LinkedIn launch post
+## Adding a new ATS adapter (the most common contribution path)
+
+- One file at `src/adapters/{name}.js`
+- Export `fetch{Name}(slug)` — returns normalized job array (run results through `normalize()` from `src/normalizer.js`)
+- Export `has{Name}(slug)` — boolean, HEAD request; used by `detect_ats` for probing
+- Register in `src/adapters/index.js` (add to ADAPTERS map and ATS_NAMES array)
+- Test fixture at `test/{name}.test.js` using `t.mock.method(global, 'fetch', mockFn)` — fetch mock auto-restores per test, no afterEach needed
+- Seed `registry/{name}.json` with verified company entries (`{slug, name, sector}`) — live-verify each entry against the ATS's API before adding
+- Verified candidates ready to implement: see `notes/expansion-research.md`
 
 ---
 
@@ -204,7 +208,21 @@ Default behavior:
 5. **Verify** — run tests, smoke-test the MCP via stdin if MCP work, voice-review user-facing text
 6. **Commit** with a descriptive message, push, mention in issue if applicable
 
-For npm publish flow: token in `.npmrc`, `npm publish` from root for jd-intel, from `mcp/` for jd-intel-mcp. Bump versions in BOTH `package.json` files for changes affecting both. See the publishing log in `notes/building-mcp.md` for the full process documented.
+For npm publish flow: token in `.npmrc`, `npm publish` from root for jd-intel, from `mcp/` for jd-intel-mcp. See the publishing log in `notes/building-mcp.md` for the full process documented.
+
+---
+
+## Versioning policy (SemVer)
+
+| Change type | Bump | Examples |
+|-------------|------|----------|
+| Patch (0.1.0 → 0.1.1) | Bug fixes, doc-only changes, no API changes | Fix Lever salary parser; clarify a tool description |
+| Minor (0.1.0 → 0.2.0) | New feature, new adapter, new tool, new filter — backward-compatible | Add Recruitee adapter; add `posted_within_hours` filter |
+| Major (0.1.0 → 1.0.0) | Breaking API changes, tool removal, schema changes | Rename `fetch_jobs` to `get_jobs`; remove a field from response |
+
+**When a change affects both packages, bump BOTH `package.json` files (root + `mcp/`) and publish both.** Otherwise bump and publish only the affected one.
+
+After publishing: tag the commit (`git tag v0.X.Y && git push origin v0.X.Y`).
 
 ---
 
@@ -218,3 +236,5 @@ For npm publish flow: token in `.npmrc`, `npm publish` from root for jd-intel, f
 - Committing files from `notes/` (they're gitignored for a reason)
 - Echoing the npm token in any committed file
 - Pile-on of the same 1-2 example companies (Stripe, Mercury) in user-facing prose
+- Drafting LinkedIn / blog / course content in this repo. That's the polish-for-publication track, owned by a separate project. Product polish (code, docs, README, MCP descriptions, voice) IS in scope; learning-publication polish isn't.
+- Treating `notes/` as read-only. When learning happens, append.

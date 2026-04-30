@@ -10,3 +10,6 @@ scan*.js
 
 # Private notes, drafts, learning logs
 notes/
+
+# Graphics / image working files
+graphics/

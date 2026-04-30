@@ -28,7 +28,17 @@
     "ai",
     "claude",
     "hiring",
-    "careers"
+    "careers",
+    "model-context-protocol",
+    "anthropic",
+    "cursor",
+    "windsurf",
+    "ai-tools",
+    "ai-assistant",
+    "job-search",
+    "applicant-tracking-system",
+    "developer-tools",
+    "nodejs"
   ],
   "author": "Prashant R",
   "license": "MIT",
