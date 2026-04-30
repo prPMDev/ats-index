@@ -72,8 +72,8 @@ If something goes wrong or you'd rather edit the config file directly, see [Manu
 ### For Cursor and Windsurf
 
 These clients have their own MCP setup flows. Follow their docs:
-- [Cursor MCP setup](https://docs.cursor.com/context/model-context-protocol)
-- [Windsurf MCP setup](https://docs.windsurf.com/windsurf/mcp)
+- Cursor: [docs.cursor.com](https://docs.cursor.com)
+- Windsurf: [docs.windsurf.com](https://docs.windsurf.com)
 
 Use this server config: `command: "npx"`, `args: ["-y", "jd-intel-mcp"]`.
 
