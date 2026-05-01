@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+      var allowedHostnames = ['prpmdev.github.io', 'localhost'];
+      if (allowedHostnames.includes(location.hostname)) {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-342XCVT9FL';
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-342XCVT9FL');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jd-intel: direct job description access for your AI</title>
+    <meta name="description" content="Search jobs from inside your AI assistant. Full text, structured, every major ATS. Open source MIT.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="jd-intel">
+    <meta property="og:description" content="Search jobs from inside your AI assistant. No copy-paste.">
+    <meta property="og:url" content="https://prpmdev.github.io/jd-intel/">
+    <meta property="og:image" content="https://prpmdev.github.io/jd-intel/wordmark.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="jd-intel">
+    <meta name="twitter:description" content="Search jobs from inside your AI assistant.">
+    <meta name="twitter:image" content="https://prpmdev.github.io/jd-intel/wordmark.png">
+    <link rel="stylesheet" href="landing.css?v=20260430v">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <nav class="topnav" aria-label="Page navigation">
+        <div class="topnav-inner">
+            <a href="#" class="topnav-brand" aria-label="jd-intel home">
+                <img src="wordmark.png" alt="" class="topnav-brand-img" aria-hidden="true">
+            </a>
+            <ul class="topnav-links">
+                <li><a href="#main" data-section="top">What is it</a></li>
+                <li><a href="#install" data-section="install">Install</a></li>
+                <li><a href="#coverage" data-section="coverage">Coverage</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main">
+        <header class="masthead">
+            <h1 class="visually-hidden">jd-intel</h1>
+            <div class="masthead-headline">
+                <div class="masthead-intro-text">
+                    <p class="hook">Ever wished you could ask your AI?</p>
+                    <p class="hero-tagline"><strong>jd-intel makes that possible.</strong> Full text. Structured. Every major ATS.</p>
+                </div>
+                <p class="badges">
+                    <img src="https://img.shields.io/npm/v/jd-intel-mcp?label=version&color=5b1a1a" alt="npm version">
+                    <img src="https://img.shields.io/npm/dw/jd-intel-mcp?label=downloads%2Fweek&color=5b1a1a" alt="npm downloads per week">
+                </p>
+            </div>
+
+            <div class="masthead-grid">
+                <div class="masthead-col-left">
+                    <ul class="prompt-list hero-prompts">
+                        <li class="prompt-pair">
+                            <span class="prompt-q">"What senior PM roles are open right now that I'd be a fit for?"</span>
+                            <span class="prompt-a">&rarr; jd-intel pulls current openings, your AI ranks by your background.</span>
+                        </li>
+                        <li class="prompt-pair">
+                            <span class="prompt-q">"Show me design lead roles open at fintechs."</span>
+                            <span class="prompt-a">&rarr; jd-intel sweeps the sector, your AI filters by what fits.</span>
+                        </li>
+                        <li class="prompt-pair">
+                            <span class="prompt-q">"Find engineering roles at series-B startups that match my background."</span>
+                            <span class="prompt-a">&rarr; jd-intel sweeps the registry, your AI ranks by fit.</span>
+                        </li>
+                        <li class="prompt-pair">
+                            <span class="prompt-q">"Which fintechs are hiring multiple senior engineering roles this week?"</span>
+                            <span class="prompt-a">&rarr; jd-intel scans across companies, your AI surfaces the patterns.</span>
+                        </li>
+                        <li class="prompt-pair">
+                            <span class="prompt-q">"Compare scope across the four staff PM roles I'm looking at."</span>
+                            <span class="prompt-a">&rarr; jd-intel pulls each JD, your AI maps the differences.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="masthead-col-right">
+                    <figure class="proof-figure">
+                        <figcaption class="proof-caption-top">See it in action</figcaption>
+                        <img src="jd-intel-chat-mockup.gif" alt="A user asks their AI for designer or PM roles at fintech companies posted in the last month, US only. The AI calls jd-intel and returns three matched roles with fit assessments." class="proof-gif" loading="eager">
+                        <figcaption class="proof-caption">One query. Three ranked matches. No tab-switching.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </header>
+
+        <section class="what-it-is" aria-labelledby="what-it-is-heading">
+            <h2 id="what-it-is-heading" class="visually-hidden">What jd-intel is</h2>
+            <div class="what-grid">
+                <div class="what-col-positioning">
+                    <p>Not another job board.</p>
+                    <p>Not another scraper.</p>
+                    <p>Not another "AI career coach."</p>
+                    <p class="positioning-resolve">Your AI. Your context. Direct access to any open role.</p>
+                </div>
+                <div class="what-col-how">
+                    <h3 class="how-block-heading">How it works</h3>
+                    <ol class="how-steps how-steps-compact">
+                        <li><strong>You ask your AI</strong> for anything that needs current job data.</li>
+                        <li><strong>jd-intel fetches</strong> via a small local MCP server.</li>
+                        <li><strong>Greenhouse, Lever, Ashby return JDs.</strong> Public APIs, no scraping.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="install" aria-labelledby="install-heading">
+            <h2 id="install-heading">Install</h2>
+
+            <p>Works with MCP-aware AI clients: Claude Desktop, Claude Code, Cursor, Windsurf.</p>
+
+            <p><strong>Prerequisite:</strong> Node.js 18 or newer from <a href="https://nodejs.org" rel="noopener">nodejs.org</a>. To check, run <code>node --version</code>.</p>
+
+            <h3>Claude Desktop (one command)</h3>
+            <ol class="install-steps">
+                <li>Open Terminal (macOS) or PowerShell (Windows). It's just a text window. Nothing destructive happens.</li>
+                <li>Paste this and hit Enter:
+<pre><code>npx jd-intel-mcp install</code></pre>
+                </li>
+                <li>Quit and reopen Claude Desktop. The tools appear automatically.</li>
+            </ol>
+
+            <h3>Cursor and Windsurf</h3>
+            <p>These clients have their own MCP setup flow. Add a server with <code>command: "npx"</code> and <code>args: ["-y", "jd-intel-mcp"]</code>. See <a href="https://docs.cursor.com" rel="noopener">docs.cursor.com</a> and <a href="https://docs.windsurf.com" rel="noopener">docs.windsurf.com</a>.</p>
+
+            <h3>Manual config (fallback)</h3>
+            <p>If the one-command install fails, edit Claude Desktop's config file directly:</p>
+            <ul class="config-paths">
+                <li><strong>macOS:</strong> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+                <li><strong>Windows:</strong> <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+            </ul>
+<pre><code>{
+  "mcpServers": {
+    "jd-intel": {
+      "command": "npx",
+      "args": ["-y", "jd-intel-mcp"]
+    }
+  }
+}</code></pre>
+            <p>Restart Claude Desktop after editing.</p>
+
+            <h3>Developer (CLI / library)</h3>
+<pre><code>npm install jd-intel</code></pre>
+            <p>Library API and CLI usage in the <a href="https://github.com/prPMDev/jd-intel#for-developers" rel="noopener">README</a>.</p>
+        </section>
+
+        <section id="coverage" class="coverage" aria-labelledby="coverage-heading">
+            <h2 id="coverage-heading">What's covered</h2>
+            <div class="coverage-grid">
+                <div>
+                    <h3>Today</h3>
+                    <ul>
+                        <li>Greenhouse</li>
+                        <li>Ashby</li>
+                        <li>Lever</li>
+                    </ul>
+                    <p class="coverage-meta">60+ verified companies in the registry.</p>
+                </div>
+                <div>
+                    <h3>Next</h3>
+                    <ul>
+                        <li>BambooHR</li>
+                        <li>Workday</li>
+                        <li>Direct career pages</li>
+                    </ul>
+                    <p class="coverage-meta">One adapter equals one file. <a href="https://github.com/prPMDev/jd-intel/issues/new" rel="noopener">Request a company</a> or <a href="https://github.com/prPMDev/jd-intel/pulls" rel="noopener">submit an adapter</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p class="built-by">Built by <a href="https://prashantrana.xyz" rel="noopener">Prashant R</a>. PM who builds. I try out and build what really matters below the AI hype.</p>
+            <p class="footer-links">
+                <a href="https://prashantrana.xyz" rel="noopener">portfolio</a> ·
+                <a href="https://www.linkedin.com/in/prashant-rana/" rel="noopener">LinkedIn</a> ·
+                <a href="https://github.com/prPMDev/jd-intel" rel="noopener">GitHub</a> ·
+                <a href="https://www.npmjs.com/package/jd-intel-mcp" rel="noopener">npm</a>
+            </p>
+            <p class="copyright">&copy; <span id="year"></span> Prashant Rana. MIT licensed.</p>
+        </footer>
+    </main>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Active section highlighting in topnav
+        (function () {
+            var navLinks = document.querySelectorAll('.topnav-links a[data-section]');
+            var sectionIds = ['prompts', 'install', 'how', 'coverage'];
+            var sections = sectionIds
+                .map(function (id) { return { id: id, el: document.getElementById(id) }; })
+                .filter(function (s) { return s.el; });
+
+            function setActive(id) {
+                navLinks.forEach(function (link) {
+                    link.classList.toggle('active', link.getAttribute('data-section') === id);
+                });
+            }
+
+            if ('IntersectionObserver' in window) {
+                var observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            var match = sections.find(function (s) { return s.el === entry.target; });
+                            if (match) setActive(match.id);
+                        }
+                    });
+                }, { rootMargin: '-30% 0px -60% 0px' });
+
+                sections.forEach(function (s) { observer.observe(s.el); });
+            }
+        })();
+    </script>
+</body>
+</html>
