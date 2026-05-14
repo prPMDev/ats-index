@@ -1,7 +1,6 @@
 <!--
-  This file mirrors AGENTS.md (the canonical agent-context file).
-  AGENTS.md follows the agents.md cross-tool standard (Cursor, Codex, Aider, etc).
-  CLAUDE.md exists so Claude Code's CLAUDE.md auto-detection keeps working.
+  Canonical agent-context file for this repo (follows the agents.md cross-tool standard).
+  CLAUDE.md mirrors this file so Claude Code's auto-detection keeps working.
   Edit both files to keep them in sync.
 -->
 
