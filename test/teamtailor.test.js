@@ -106,6 +106,24 @@ describe('fetchTeamtailor', () => {
     assert.deepEqual(job.salary, { min: 150000, max: 200000, currency: 'USD' });
   });
 
+  test('falls back to a regional subdomain when base 404s', async (t) => {
+    const calls = [];
+    t.mock.method(global, 'fetch', async (url) => {
+      calls.push(url);
+      if (url.includes('.na.teamtailor.com')) {
+        return { ok: true, status: 200, text: async () => FIXTURE_XML };
+      }
+      return { ok: false, status: 404, text: async () => '' };
+    });
+
+    const jobs = await fetchTeamtailor('crunchbase');
+
+    assert.equal(jobs.length, 1);
+    assert.equal(jobs[0].companySlug, 'crunchbase');
+    assert.match(calls[0], /^https:\/\/crunchbase\.teamtailor\.com\/jobs\.rss$/);
+    assert.match(calls[1], /^https:\/\/crunchbase\.na\.teamtailor\.com\/jobs\.rss$/);
+  });
+
   test('handles a feed with no items', async (t) => {
     mockFetch(t, { body: '<rss><channel><title>Empty Co</title></channel></rss>' });
     const jobs = await fetchTeamtailor('emptyco');

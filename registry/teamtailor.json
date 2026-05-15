@@ -13,5 +13,6 @@
   {"slug": "billogram", "name": "Billogram", "sector": "fintech / billing"},
   {"slug": "detectify", "name": "Detectify", "sector": "security"},
   {"slug": "storytel",  "name": "Storytel",  "sector": "audiobooks"},
-  {"slug": "oneflow",   "name": "Oneflow",   "sector": "contract management"}
+  {"slug": "oneflow",   "name": "Oneflow",   "sector": "contract management"},
+  {"slug": "crunchbase", "name": "Crunchbase", "sector": "company data"}
 ]

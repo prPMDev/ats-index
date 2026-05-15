@@ -23,14 +23,36 @@ import { normalize, stripHtml } from '../normalizer.js';
  * @param {string} slug - TeamTailor career-site slug (e.g., 'tibber')
  * @returns {Promise<Array>} Normalized job objects
  */
-export async function fetchTeamtailor(slug) {
-  const url = `https://${slug}.teamtailor.com/jobs.rss`;
-  const resp = await fetch(url, { redirect: 'follow' });
+// Most sites are {slug}.teamtailor.com, but some sit on a regional
+// segment, e.g. crunchbase.na.teamtailor.com. '' is the base host.
+const TT_REGIONS = ['', 'na', 'eu'];
 
-  if (!resp.ok) {
-    if (resp.status === 404) return []; // No TeamTailor site for this slug
-    throw new Error(`TeamTailor RSS error for ${slug}: ${resp.status}`);
+/**
+ * Resolve which TeamTailor host actually serves this slug's feed.
+ * Returns the first 200 Response, throws on a non-404 error, or
+ * returns null if no region has a feed.
+ */
+async function resolveFeed(slug, method = 'GET') {
+  for (const region of TT_REGIONS) {
+    const host = region
+      ? `${slug}.${region}.teamtailor.com`
+      : `${slug}.teamtailor.com`;
+    const resp = await fetch(`https://${host}/jobs.rss`, {
+      method,
+      redirect: 'follow',
+    });
+    if (resp.ok) return resp;
+    if (resp.status !== 404) {
+      throw new Error(`TeamTailor RSS error for ${slug}: ${resp.status}`);
+    }
+    // 404 on this host — try the next region.
   }
+  return null;
+}
+
+export async function fetchTeamtailor(slug) {
+  const resp = await resolveFeed(slug, 'GET');
+  if (!resp) return []; // No TeamTailor site in any known region
 
   const xml = await resp.text();
 
@@ -105,11 +127,7 @@ function decodeEntities(s) {
  */
 export async function hasTeamtailor(slug) {
   try {
-    const resp = await fetch(`https://${slug}.teamtailor.com/jobs.rss`, {
-      method: 'HEAD',
-      redirect: 'follow',
-    });
-    return resp.ok;
+    return (await resolveFeed(slug, 'HEAD')) !== null;
   } catch {
     return false;
   }
