@@ -1,6 +1,8 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { loadRegistry, searchRegistry, findAtsBySlug } from '../src/registry.js';
+import { loadRegistry, searchRegistry, findAtsBySlug, findEntryBySlug } from '../src/registry.js';
+
+const ATS_KEYS = ['greenhouse', 'lever', 'ashby', 'smartrecruiters', 'teamtailor', 'recruitee', 'workday'];
 
 describe('loadRegistry', () => {
   test('loads a single ATS as an array', async () => {
@@ -24,10 +26,15 @@ describe('loadRegistry', () => {
 
   test('loads all ATS platforms when called with no arg', async () => {
     const all = await loadRegistry();
-    assert.ok(all.greenhouse, 'greenhouse key present');
-    assert.ok(all.lever, 'lever key present');
-    assert.ok(all.ashby, 'ashby key present');
-    assert.ok(Array.isArray(all.greenhouse));
+    // Locks the loadRegistry bugfix: every registered ATS must be loaded,
+    // not just the original three. Pre-0.5.0 this only loaded
+    // greenhouse/lever/ashby, so ~37 smartrecruiters/teamtailor/recruitee
+    // companies fell through to slow discovery probing and never appeared
+    // in search_registry; workday's registry-only routing also needs this.
+    for (const ats of ATS_KEYS) {
+      assert.ok(all[ats], `${ats} key present`);
+      assert.ok(Array.isArray(all[ats]), `${ats} is an array`);
+    }
   });
 });
 
@@ -44,7 +51,7 @@ describe('searchRegistry', () => {
     const someName = all.greenhouse[0].name;
     const results = await searchRegistry(someName);
     for (const r of results) {
-      assert.ok(['greenhouse', 'lever', 'ashby'].includes(r.ats));
+      assert.ok(ATS_KEYS.includes(r.ats));
     }
   });
 
@@ -71,5 +78,28 @@ describe('findAtsBySlug', () => {
   test('returns null for unknown slug', async () => {
     const ats = await findAtsBySlug('zzzz-nonexistent-slug-zzzz');
     assert.equal(ats, null);
+  });
+});
+
+describe('findEntryBySlug', () => {
+  test('returns {ats, entry} with adapter config for a Workday slug', async () => {
+    const hit = await findEntryBySlug('cisco');
+    assert.ok(hit, 'cisco should be in the registry');
+    assert.equal(hit.ats, 'workday');
+    assert.equal(hit.entry.slug, 'cisco');
+    assert.equal(hit.entry.name, 'Cisco');
+    assert.deepEqual(hit.entry.config, { tenant: 'cisco', env: 'wd5', site: 'Cisco_Careers' });
+  });
+
+  test('returns the full entry for a non-Workday slug', async () => {
+    const hit = await findEntryBySlug('stripe');
+    assert.ok(hit);
+    assert.equal(hit.ats, 'greenhouse');
+    assert.equal(hit.entry.slug, 'stripe');
+  });
+
+  test('returns null for unknown slug', async () => {
+    const hit = await findEntryBySlug('zzzz-nonexistent-slug-zzzz');
+    assert.equal(hit, null);
   });
 });

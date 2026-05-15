@@ -41,7 +41,7 @@ Because scraping breaks where jd-intel doesn't:
 - **Full JDs when browsing fails.** SPA-rendered boards, slow loads, auth walls, and geo-restrictions block a browser. They don't block a public API call.
 - **Structured data, not HTML soup.** Salary, location type, department, and clean markdown, normalized across every ATS.
 - **No keys, no browser.** Public APIs only. Runs anywhere your AI does.
-- **One schema, every platform.** Greenhouse, Lever, Ashby, SmartRecruiters, TeamTailor, Recruitee return the same shape.
+- **One schema, every platform.** Greenhouse, Lever, Ashby, SmartRecruiters, TeamTailor, Recruitee, Workday return the same shape.
 
 ---
 
@@ -209,8 +209,8 @@ No custom parsing per company.
 | SmartRecruiters | Shipped | Enterprise and mid-market |
 | TeamTailor | Shipped | European startups and scale-ups |
 | Recruitee | Shipped | Dutch / EU SMBs and scale-ups |
+| Workday | Shipped | Large enterprises (registry-keyed) |
 | Personio | Planned | German / EU mid-market |
-| Workday | Planned | Large enterprises (scoped scraper) |
 
 Adding a new ATS is a single adapter file. See [Contributing](#contributing).
 
@@ -235,10 +235,10 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 
 **Shipped**
 - Library, CLI, and MCP server (three surfaces of one toolkit)
-- Greenhouse, Ashby, Lever, SmartRecruiters, TeamTailor, Recruitee adapters
+- Greenhouse, Ashby, Lever, SmartRecruiters, TeamTailor, Recruitee, Workday adapters
 - Title, topic, location, and date filters
 - Salary extraction from JD text
-- Verified company registry (155+ companies)
+- Verified company registry (160+ companies)
 
 **Next**
 - Personio adapter (German / EU mid-market)
@@ -246,7 +246,6 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 
 **Planned**
 - Workable adapter (parked — needs SPA shortcode resolution)
-- Workday support (scoped scraper — large enterprise universe)
 - Temporal tracking (when roles open, close, reopen)
 - Change detection
 - Resume-aware fit scoring
@@ -257,7 +256,7 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 
 **Add a company to the registry:** submit a PR to the appropriate file in `registry/`.
 
-**Add an ATS adapter:** new file in `src/adapters/`. One adapter, one file. Follow the pattern of the existing three.
+**Add an ATS adapter:** new file in `src/adapters/`. One adapter, one file. Follow the pattern of the existing adapters.
 
 **Request a company:** [open an issue](https://github.com/prPMDev/jd-intel/issues/new). Tell me who's missing.
 

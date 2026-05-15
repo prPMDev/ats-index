@@ -25,7 +25,7 @@ export async function loadRegistry(ats) {
 
   // Load all
   const all = {};
-  for (const platform of ['greenhouse', 'lever', 'ashby']) {
+  for (const platform of ['greenhouse', 'lever', 'ashby', 'smartrecruiters', 'teamtailor', 'recruitee', 'workday']) {
     try {
       const data = await readFile(join(REGISTRY_DIR, `${platform}.json`), 'utf-8');
       all[platform] = JSON.parse(data);
@@ -66,6 +66,24 @@ export async function findAtsBySlug(slug) {
   const all = await loadRegistry();
   for (const [ats, companies] of Object.entries(all)) {
     if (companies.some(c => c.slug === slug)) return ats;
+  }
+  return null;
+}
+
+/**
+ * Look up the full registry entry for a slug, with its ATS.
+ * Unlike findAtsBySlug (returns just the ats name), this returns the
+ * whole entry so callers can read adapter-specific config (e.g. the
+ * Workday {tenant, env, site} triple). Additive — does not change
+ * findAtsBySlug, which has other callers.
+ *
+ * @returns {Promise<{ats: string, entry: object}|null>}
+ */
+export async function findEntryBySlug(slug) {
+  const all = await loadRegistry();
+  for (const [ats, companies] of Object.entries(all)) {
+    const entry = companies.find(c => c.slug === slug);
+    if (entry) return { ats, entry };
   }
   return null;
 }

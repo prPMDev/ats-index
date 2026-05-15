@@ -1,0 +1,8 @@
+[
+  {"slug": "cisco",         "name": "Cisco",           "sector": "networking",        "config": {"tenant": "cisco",        "env": "wd5",  "site": "Cisco_Careers"}},
+  {"slug": "salesforce",    "name": "Salesforce",      "sector": "crm / saas",        "config": {"tenant": "salesforce",   "env": "wd12", "site": "External_Career_Site"}},
+  {"slug": "bankofamerica", "name": "Bank of America", "sector": "banking",           "config": {"tenant": "ghr",          "env": "wd1",  "site": "Lateral-US"}},
+  {"slug": "adobe",         "name": "Adobe",           "sector": "creative software", "config": {"tenant": "adobe",        "env": "wd5",  "site": "external_experienced"}},
+  {"slug": "nvidia",        "name": "Nvidia",          "sector": "semiconductors",    "config": {"tenant": "nvidia",       "env": "wd5",  "site": "NVIDIAExternalCareerSite"}},
+  {"slug": "servicetitan",  "name": "ServiceTitan",    "sector": "vertical saas",     "config": {"tenant": "servicetitan", "env": "wd1",  "site": "ServiceTitan"}}
+]

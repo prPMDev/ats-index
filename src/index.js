@@ -6,7 +6,7 @@
  */
 
 import { ADAPTERS, ATS_NAMES } from './adapters/index.js';
-import { loadRegistry, searchRegistry, detectAts, findAtsBySlug } from './registry.js';
+import { loadRegistry, searchRegistry, detectAts, findAtsBySlug, findEntryBySlug } from './registry.js';
 import { applyFilters } from './filters.js';
 
 /**
@@ -38,21 +38,34 @@ export async function fetchJobs({
   // Unified slug normalization: strip all non-alphanumeric (matches detectAts)
   const slug = company.toLowerCase().replace(/[^a-z0-9]/g, '');
 
+  // Filter context is passed as an additive 2nd arg to adapters. Existing
+  // adapters declare fetch{Name}(slug) and ignore extra positional args
+  // (JS no-op), so this is backward-compatible. Filter-aware adapters
+  // (e.g. Workday) use it to avoid mass detail-fetching on huge tenants.
+  const filterContext = { titleFilter, filter, postedWithinDays, locationIncludes, locationExcludes, limit };
+
   let jobs;
   if (ats) {
     const adapter = ADAPTERS[ats];
     if (!adapter) throw new Error(`Unknown ATS: ${ats}. Supported: ${ATS_NAMES.join(', ')}`);
-    jobs = await adapter.fetch(slug);
+    jobs = await adapter.fetch(slug, { filterContext });
   } else {
     // Consult registry first — if we know which ATS this company uses,
     // skip probing the others (saves API calls, clearer error semantics).
-    const known = await findAtsBySlug(slug);
-    if (known) {
-      jobs = await ADAPTERS[known].fetch(slug);
+    // The full entry is needed so adapter-specific config (e.g. the
+    // Workday {tenant,env,site} triple) reaches the adapter.
+    const hit = await findEntryBySlug(slug);
+    if (hit) {
+      jobs = await ADAPTERS[hit.ats].fetch(slug, {
+        config: hit.entry.config,
+        companyName: hit.entry.name,
+        filterContext,
+      });
     } else {
-      // Discovery mode: company not in registry, probe all adapters
+      // Discovery mode: company not in registry, probe all adapters.
+      // (Registry-only adapters like Workday bail here via their guard.)
       const results = await Promise.allSettled(
-        Object.entries(ADAPTERS).map(async ([name, adapter]) => adapter.fetch(slug))
+        Object.entries(ADAPTERS).map(async ([name, adapter]) => adapter.fetch(slug, { filterContext }))
       );
       jobs = results
         .filter(r => r.status === 'fulfilled')
@@ -91,6 +104,7 @@ export const registry = {
   search: searchRegistry,
   detect: detectAts,
   findAtsBySlug,
+  findEntryBySlug,
 };
 
 // Re-export individual adapters for direct use

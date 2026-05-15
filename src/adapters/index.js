@@ -4,6 +4,7 @@ export { fetchAshby, hasAshby } from './ashby.js';
 export { fetchSmartrecruiters, hasSmartrecruiters } from './smartrecruiters.js';
 export { fetchTeamtailor, hasTeamtailor } from './teamtailor.js';
 export { fetchRecruitee, hasRecruitee } from './recruitee.js';
+export { fetchWorkday, hasWorkday } from './workday.js';
 
 export const ADAPTERS = {
   greenhouse: { fetch: (...args) => import('./greenhouse.js').then(m => m.fetchGreenhouse(...args)), has: (...args) => import('./greenhouse.js').then(m => m.hasGreenhouse(...args)) },
@@ -12,6 +13,7 @@ export const ADAPTERS = {
   smartrecruiters: { fetch: (...args) => import('./smartrecruiters.js').then(m => m.fetchSmartrecruiters(...args)), has: (...args) => import('./smartrecruiters.js').then(m => m.hasSmartrecruiters(...args)) },
   teamtailor: { fetch: (...args) => import('./teamtailor.js').then(m => m.fetchTeamtailor(...args)), has: (...args) => import('./teamtailor.js').then(m => m.hasTeamtailor(...args)) },
   recruitee: { fetch: (...args) => import('./recruitee.js').then(m => m.fetchRecruitee(...args)), has: (...args) => import('./recruitee.js').then(m => m.hasRecruitee(...args)) },
+  workday: { fetch: (...args) => import('./workday.js').then(m => m.fetchWorkday(...args)), has: (...args) => import('./workday.js').then(m => m.hasWorkday(...args)) },
 };
 
 export const ATS_NAMES = Object.keys(ADAPTERS);

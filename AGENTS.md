@@ -45,7 +45,7 @@ A toolkit (three surfaces, one core) for fetching and normalizing job descriptio
 - **CLI** (`npx jd-intel fetch <slug>`) — same capabilities from the terminal.
 - **MCP server** (`jd-intel-mcp`) — exposes the toolkit to AI assistants via the Model Context Protocol.
 
-Six ATS adapters shipped: Greenhouse, Lever, Ashby, SmartRecruiters, TeamTailor, Recruitee. 155+ company verified registry.
+Seven ATS adapters shipped: Greenhouse, Lever, Ashby, SmartRecruiters, TeamTailor, Recruitee, Workday. 160+ company verified registry.
 
 ---
 
@@ -66,7 +66,7 @@ cd C:\Projects\jd-intel
 npm install                       # root deps
 cd mcp && npm install             # MCP package deps
 
-node --test test/*.test.js        # 78 tests, all should pass
+node --test test/*.test.js        # 124 tests, all should pass
 node mcp/server.js                # boot MCP server locally
 ```
 
@@ -127,7 +127,7 @@ jd-intel/
 
 **Registry-first routing:**
 - `fetchJobs` consults the registry before probing all adapters
-- Known company → 1 adapter call. Unknown → discovery mode (probe all three).
+- Known company → 1 adapter call. Unknown → discovery mode (probe all adapters). Workday is registry-only (opaque tenant key, no probe).
 
 **Voice rules (apply to all user-facing prose):**
 - No em dashes (—) in README, docs, mcp/README, mcp/descriptions.js. Period, colon, comma, or rewrite. Code comments / JSDoc are exempt.
