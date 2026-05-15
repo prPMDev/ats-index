@@ -3,8 +3,11 @@ import { createHash } from 'node:crypto';
 /**
  * Generate a stable ID for a job posting.
  */
-export function jobId(company, title, ats) {
-  const raw = `${company}|${title}|${ats}`.toLowerCase().trim();
+export function jobId(company, title, ats, location = '') {
+  // Location is part of identity: the same role posted in multiple
+  // offices is distinct requisitions with distinct URLs. Omitting it
+  // collapsed multi-office postings to one id (see issue #17).
+  const raw = `${company}|${title}|${ats}|${location}`.toLowerCase().trim();
   return createHash('md5').update(raw).digest('hex').substring(0, 12);
 }
 
@@ -14,7 +17,7 @@ export function jobId(company, title, ats) {
 export function normalize(raw, ats) {
   const now = new Date().toISOString();
   return {
-    id: jobId(raw.company || raw.companySlug, raw.title, ats),
+    id: jobId(raw.company || raw.companySlug, raw.title, ats, raw.location || ''),
     company: raw.company || raw.companySlug || '',
     companySlug: raw.companySlug || '',
     ats,

@@ -43,6 +43,22 @@ describe('jobId', () => {
       jobId('stripe', 'senior pm', 'greenhouse')
     );
   });
+
+  test('distinguishes the same role across offices (issue #17)', () => {
+    const sf = jobId('brex', 'Group Product Manager', 'greenhouse', 'San Francisco');
+    const sea = jobId('brex', 'Group Product Manager', 'greenhouse', 'Seattle');
+    const ny = jobId('brex', 'Group Product Manager', 'greenhouse', 'New York');
+    assert.notEqual(sf, sea);
+    assert.notEqual(sf, ny);
+    assert.notEqual(sea, ny);
+  });
+
+  test('still deterministic with location', () => {
+    assert.equal(
+      jobId('brex', 'GPM', 'greenhouse', 'Remote - US'),
+      jobId('brex', 'GPM', 'greenhouse', 'Remote - US')
+    );
+  });
 });
 
 describe('normalize', () => {
