@@ -119,6 +119,24 @@ If `npx jd-intel-mcp install` fails, edit the config directly.
 
 Restart Claude Desktop.
 
+### Updating
+
+`npx -y jd-intel-mcp` auto-updates within ~24 hours via npm's cache. To force an update immediately:
+
+```bash
+npx clear-npx-cache
+```
+
+Then quit and reopen Claude Desktop.
+
+If you installed the library or CLI directly:
+
+```bash
+npm install jd-intel@latest       # force latest
+# or
+npm update jd-intel               # respect semver
+```
+
 ---
 
 ## MCP tools
