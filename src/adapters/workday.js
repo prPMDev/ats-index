@@ -96,8 +96,8 @@ export async function fetchWorkday(slug, ctx = {}) {
   //    full backstop instead of truncating tightly to `limit` (which
   //    could hydrate jobs that all fail the regex while better matches
   //    go unscanned). Proper fix (smart pagination / rate-limited
-  //    concurrency / surfaced truncation) is tracked in the huge-tenant
-  //    coverage issue, to be solved with retry/rate-limit work (#7).
+  //    concurrency / surfaced truncation) is tracked in #26, to be
+  //    designed alongside retry/rate-limit work (#7).
   const limit = typeof fc.limit === 'number' && fc.limit > 0 ? fc.limit : 100;
   const cap = fc.filter ? MAX_DETAIL_FETCHES : Math.min(limit, MAX_DETAIL_FETCHES);
   candidates = candidates.slice(0, cap);
