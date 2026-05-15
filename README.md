@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js 18+](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org)
 [![npm](https://img.shields.io/npm/v/jd-intel.svg)](https://www.npmjs.com/package/jd-intel)
-[![npm downloads](https://img.shields.io/npm/dw/jd-intel-mcp.svg)](https://www.npmjs.com/package/jd-intel-mcp)
+[![npm downloads](https://img.shields.io/npm/dt/jd-intel-mcp.svg)](https://www.npmjs.com/package/jd-intel-mcp)
 [![GitHub stars](https://img.shields.io/github/stars/prPMDev/jd-intel.svg?style=flat)](https://github.com/prPMDev/jd-intel/stargazers)
 
 > **Stop pasting job descriptions into AI assistants. Let your AI fetch them directly.**
