@@ -1,0 +1,17 @@
+[
+  {"slug": "polestar",  "name": "Polestar",  "sector": "automotive / ev"},
+  {"slug": "quinyx",    "name": "Quinyx",    "sector": "workforce management"},
+  {"slug": "qliro",     "name": "Qliro",     "sector": "payments"},
+  {"slug": "tibber",    "name": "Tibber",    "sector": "energy tech"},
+  {"slug": "funnel",    "name": "Funnel",    "sector": "marketing data"},
+  {"slug": "anyfin",    "name": "Anyfin",    "sector": "fintech"},
+  {"slug": "hedvig",    "name": "Hedvig",    "sector": "insurtech"},
+  {"slug": "juni",      "name": "Juni",      "sector": "fintech"},
+  {"slug": "bambuser",  "name": "Bambuser",  "sector": "live video commerce"},
+  {"slug": "karma",     "name": "Karma",     "sector": "sustainability"},
+  {"slug": "mate",      "name": "Mate",      "sector": "e-mobility"},
+  {"slug": "billogram", "name": "Billogram", "sector": "fintech / billing"},
+  {"slug": "detectify", "name": "Detectify", "sector": "security"},
+  {"slug": "storytel",  "name": "Storytel",  "sector": "audiobooks"},
+  {"slug": "oneflow",   "name": "Oneflow",   "sector": "contract management"}
+]

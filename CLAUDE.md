@@ -46,7 +46,7 @@ A toolkit (three surfaces, one core) for fetching and normalizing job descriptio
 - **CLI** (`npx jd-intel fetch <slug>`) — same capabilities from the terminal.
 - **MCP server** (`jd-intel-mcp`) — exposes the toolkit to AI assistants via the Model Context Protocol.
 
-Four ATS adapters shipped: Greenhouse, Lever, Ashby, SmartRecruiters. 130+ company verified registry.
+Five ATS adapters shipped: Greenhouse, Lever, Ashby, SmartRecruiters, TeamTailor. 145+ company verified registry.
 
 ---
 

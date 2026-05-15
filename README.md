@@ -196,6 +196,7 @@ No custom parsing per company.
 | Ashby | Shipped | Growing fast with startups |
 | Lever | Shipped | Common at mid-stage companies |
 | SmartRecruiters | Shipped | Enterprise and mid-market |
+| TeamTailor | Shipped | European startups and scale-ups |
 | BambooHR | Planned | Mid-market companies |
 | Workday | Planned | Large enterprises |
 
@@ -222,14 +223,14 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 
 **Shipped**
 - Library, CLI, and MCP server (three surfaces of one toolkit)
-- Greenhouse, Ashby, Lever, SmartRecruiters adapters
+- Greenhouse, Ashby, Lever, SmartRecruiters, TeamTailor adapters
 - Title, topic, location, and date filters
 - Salary extraction from JD text
-- Verified company registry (100+ companies)
+- Verified company registry (145+ companies)
 
 **Next**
-- TeamTailor adapter (European startup coverage)
 - Anthropic MCP marketplace submission
+- BambooHR and Workable adapters
 
 **Planned**
 - BambooHR and Workable adapters
