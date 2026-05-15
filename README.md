@@ -227,12 +227,13 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 - Verified company registry (100+ companies)
 
 **Next**
+- SmartRecruiters adapter (mature REST API, mid-market coverage)
+- TeamTailor adapter (European startup coverage)
 - Anthropic MCP marketplace submission
-- Setup guide with screenshots (non-technical walkthrough)
-- Remote MCP transport (for Claude.ai Custom Connectors)
 
 **Planned**
-- BambooHR and Workday adapters
+- BambooHR and Workable adapters
+- Workday support (scoped scraper — large enterprise universe)
 - Temporal tracking (when roles open, close, reopen)
 - Change detection
 - Resume-aware fit scoring
