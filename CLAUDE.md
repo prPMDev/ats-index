@@ -15,7 +15,7 @@ Public repo. Open source MIT. Built by Prashant R as a portfolio piece at the in
 
 ## PRIME DIRECTIVE: this is a public repo
 
-Same anonymity discipline as the Pursuit project, with one explicit exception (author attribution is intentional public credit).
+Anonymity discipline applies throughout, with one explicit exception (author attribution is intentional public credit).
 
 **Always anonymize:**
 - Specific companies the author applied to or considered (use "fintech company", "Company X")
