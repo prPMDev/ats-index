@@ -34,6 +34,17 @@ Done.
 
 ---
 
+## Why not just scrape?
+
+Because scraping breaks where jd-intel doesn't:
+
+- **Full JDs when browsing fails.** SPA-rendered boards, slow loads, auth walls, and geo-restrictions block a browser. They don't block a public API call.
+- **Structured data, not HTML soup.** Salary, location type, department, and clean markdown, normalized across every ATS.
+- **No keys, no browser.** Public APIs only. Runs anywhere your AI does.
+- **One schema, every platform.** Greenhouse, Lever, Ashby, SmartRecruiters, TeamTailor return the same shape.
+
+---
+
 ## What you can do with it
 
 - Look up open roles at any company directly from your AI, no copy-paste
