@@ -206,7 +206,7 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 - Greenhouse, Ashby, Lever adapters
 - Title, topic, location, and date filters
 - Salary extraction from JD text
-- Verified company registry (66 companies)
+- Verified company registry (100+ companies)
 
 **Next**
 - Anthropic MCP marketplace submission

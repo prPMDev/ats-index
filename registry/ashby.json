@@ -12,5 +12,18 @@
   {"slug": "shiftkey",  "name": "ShiftKey",  "sector": "healthcare staffing"},
   {"slug": "gorgias",   "name": "Gorgias",   "sector": "customer support"},
   {"slug": "zapier",    "name": "Zapier",    "sector": "integration platform"},
-  {"slug": "clickup",   "name": "ClickUp",   "sector": "productivity"}
+  {"slug": "clickup",   "name": "ClickUp",   "sector": "productivity"},
+  {"slug": "higharc",        "name": "Higharc",        "sector": "architecture tech"},
+  {"slug": "mural",          "name": "Mural",          "sector": "collaboration"},
+  {"slug": "ironcladhq",     "name": "Ironclad",       "sector": "legal tech"},
+  {"slug": "wrapbook",       "name": "Wrapbook",       "sector": "entertainment payroll"},
+  {"slug": "Tabs",           "name": "Tabs",           "sector": "fintech"},
+  {"slug": "vibe",           "name": "Vibe",           "sector": "saas"},
+  {"slug": "unicourt",       "name": "UniCourt",       "sector": "legal tech"},
+  {"slug": "meridianlink",   "name": "MeridianLink",   "sector": "fintech"},
+  {"slug": "Hippocratic AI", "name": "Hippocratic AI", "sector": "healthcare ai"},
+  {"slug": "scan-com",       "name": "Scan.com",       "sector": "healthcare imaging"},
+  {"slug": "hiive",          "name": "Hiive",          "sector": "marketplaces"},
+  {"slug": "virtuous",       "name": "Virtuous",       "sector": "nonprofit crm"},
+  {"slug": "jasper ai",      "name": "Jasper",         "sector": "ai writing"}
 ]
