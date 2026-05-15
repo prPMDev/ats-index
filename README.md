@@ -195,6 +195,7 @@ No custom parsing per company.
 | Greenhouse | Shipped | Most widely used ATS in tech |
 | Ashby | Shipped | Growing fast with startups |
 | Lever | Shipped | Common at mid-stage companies |
+| SmartRecruiters | Shipped | Enterprise and mid-market |
 | BambooHR | Planned | Mid-market companies |
 | Workday | Planned | Large enterprises |
 
@@ -221,13 +222,12 @@ All filters AND together. Deep dive on patterns and gotchas: [docs/filters.md](d
 
 **Shipped**
 - Library, CLI, and MCP server (three surfaces of one toolkit)
-- Greenhouse, Ashby, Lever adapters
+- Greenhouse, Ashby, Lever, SmartRecruiters adapters
 - Title, topic, location, and date filters
 - Salary extraction from JD text
 - Verified company registry (100+ companies)
 
 **Next**
-- SmartRecruiters adapter (mature REST API, mid-market coverage)
 - TeamTailor adapter (European startup coverage)
 - Anthropic MCP marketplace submission
 

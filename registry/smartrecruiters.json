@@ -1,0 +1,13 @@
+[
+  {"slug": "Visa",           "name": "Visa",            "sector": "payments"},
+  {"slug": "Wise",           "name": "Wise",            "sector": "fintech"},
+  {"slug": "Wabtec",         "name": "Wabtec",          "sector": "rail / industrial"},
+  {"slug": "Sutherland",     "name": "Sutherland",      "sector": "bpo / cx"},
+  {"slug": "AveryDennison",  "name": "Avery Dennison",  "sector": "materials"},
+  {"slug": "PublicStorage",  "name": "Public Storage",  "sector": "real estate"},
+  {"slug": "Sportradar",     "name": "Sportradar",      "sector": "sports data"},
+  {"slug": "Entain",         "name": "Entain",          "sector": "gaming"},
+  {"slug": "Picnic",         "name": "Picnic",          "sector": "grocery delivery"},
+  {"slug": "Hootsuite",      "name": "Hootsuite",       "sector": "social media management"},
+  {"slug": "BusinessWire",   "name": "Business Wire",   "sector": "pr / newswire"}
+]
