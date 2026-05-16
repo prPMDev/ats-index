@@ -22,10 +22,6 @@ jobs:
       - name: Install root deps
         run: npm install
 
-      - name: Install mcp deps
-        run: npm install
-        working-directory: mcp
-
       - name: Run tests
         run: node --test test/*.test.js
 
@@ -33,6 +29,29 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # mcp depends on jd-intel@^0.5.0; it must exist on the registry
+      # before mcp's npm install can resolve it. Publish jd-intel first
+      # (above), then poll until the registry serves this exact version
+      # (propagation is usually seconds, occasionally a minute).
+      - name: Wait for jd-intel to be resolvable on npm
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Waiting for jd-intel@$VERSION on the registry..."
+          for i in $(seq 1 30); do
+            if npm view "jd-intel@$VERSION" version > /dev/null 2>&1; then
+              echo "jd-intel@$VERSION is available."
+              exit 0
+            fi
+            echo "Attempt $i: not yet available, retrying in 10s..."
+            sleep 10
+          done
+          echo "Timed out waiting for jd-intel@$VERSION on the registry." >&2
+          exit 1
+
+      - name: Install mcp deps
+        run: npm install
+        working-directory: mcp
 
       - name: Publish jd-intel-mcp (MCP server)
         run: npm publish --access public
