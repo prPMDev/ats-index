@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -25,15 +28,23 @@ jobs:
       - name: Run tests
         run: node --test test/*.test.js
 
+      # Idempotent: skip if this version is already on the registry, so a
+      # re-tag or a re-run does not hard-fail on "cannot publish over
+      # existing version". Fresh versions publish normally.
       - name: Publish jd-intel (library + CLI)
-        run: npm publish --access public
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "jd-intel@$VERSION" version > /dev/null 2>&1; then
+            echo "jd-intel@$VERSION already published, skipping."
+          else
+            npm publish --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # mcp depends on jd-intel@^0.5.0; it must exist on the registry
-      # before mcp's npm install can resolve it. Publish jd-intel first
-      # (above), then poll until the registry serves this exact version
-      # (propagation is usually seconds, occasionally a minute).
+      # before mcp's npm install can resolve it. Poll until the registry
+      # serves this exact version (propagation is usually seconds).
       - name: Wait for jd-intel to be resolvable on npm
         run: |
           VERSION=$(node -p "require('./package.json').version")
@@ -54,7 +65,21 @@ jobs:
         working-directory: mcp
 
       - name: Publish jd-intel-mcp (MCP server)
-        run: npm publish --access public
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "jd-intel-mcp@$VERSION" version > /dev/null 2>&1; then
+            echo "jd-intel-mcp@$VERSION already published, skipping."
+          else
+            npm publish --access public
+          fi
         working-directory: mcp
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Tag pushes only: cut (or update) the GitHub Release with
+      # auto-generated notes. workflow_dispatch (no tag) skips this.
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
